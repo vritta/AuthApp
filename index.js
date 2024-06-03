@@ -11,7 +11,7 @@ dbConnect();
 
 //route import and mount
 const user = require("./routes/user");
-app.use("./app/v1/", user);
+app.use("/app/v1/", user);
 
 //activate server
 app.listen(PORT, ()=>{

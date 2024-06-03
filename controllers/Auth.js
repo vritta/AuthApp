@@ -1,5 +1,5 @@
 const bcrypt = require("bcrypt");
-const User = require("../models/User");
+const User = require("../model/User");
 
 //signup route handler
 exports.signup = async (req, res)=>{
@@ -32,7 +32,7 @@ exports.signup = async (req, res)=>{
         return res.status(200).json({
             success:true,
             message:'User created successfully',
-        })
+        });
     }
     catch(err){
         console.error(err);
@@ -41,15 +41,15 @@ exports.signup = async (req, res)=>{
             message:'User cannot be registered, please try again later',
         });
     }
-}
-exports.login = async (req, res)=>{
-    try{
-        // get data
-        const {email, password} = req.body;
-        // check if user already exist
-        const 
-    }
-    catch(err){
-        console.log("error in signup method");
-    }
-}
+};
+// exports.login = async (req, res)=>{
+//     try{
+//         // get data
+//         const {email, password} = req.body;
+//         // check if user already exist
+//         const 
+//     }
+//     catch(err){
+//         console.log("error in signup method");
+//     }
+// }
