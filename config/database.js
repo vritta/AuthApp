@@ -9,10 +9,10 @@ connect = ()=>{
     })
     .then(()=>{console.log("Database is connected successfully")})
     .catch((err)=>{
-        console.log("DB Connection issues");
+        console.log("DB Connection issues");    
         console.error(err);
         process.exit(1);
     });
-}
+}  
 
 module.exports =  connect;
