@@ -1,5 +1,7 @@
 const bcrypt = require("bcrypt");
 const User = require("../model/User");
+const jwt = require("jsonwebtoken");
+require("dotenv").config();
 
 //signup route handler
 exports.signup = async (req, res)=>{
@@ -42,14 +44,47 @@ exports.signup = async (req, res)=>{
         });
     }
 };
-// exports.login = async (req, res)=>{
-//     try{
-//         // get data
-//         const {email, password} = req.body;
-//         // check if user already exist
-//         const 
-//     }
-//     catch(err){
-//         console.log("error in signup method");
-//     }
-// }
+exports.login = async (req, res)=>{
+    try{
+        // get data
+        const {email, password} = req.body;
+        // validation on email and password
+        if(!email || !password){
+            return res.status(400).json({
+                success:false,
+                message:'Please fill all the details carefully',
+            });
+        }
+        // check if user already exist
+        const existingUser = await User.findOne({email});
+        if(!existingUser){
+            return res.status(400).json({
+                success:false,
+                message:'Existing user is not registered',
+            });
+        }
+
+        const payload = {
+            email: user.email,
+            id:user._id,
+            role:user.role,
+        }
+        // verify password and generate JWT token
+        if(await bcrypt.compare(password, existingUser.password)){
+            // password match
+            let token = jwt.sign(payload, 
+                process.env.JWT_SECRET,
+                {
+                    expiresIn:"2h",
+                }
+            );
+            existingUser.token = token;
+            existingUser.password = undefined;
+
+            res.cookie
+        }
+    }
+    catch(err){
+        console.log("error in signup method");
+    }
+}
