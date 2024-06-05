@@ -56,35 +56,50 @@ exports.login = async (req, res)=>{
             });
         }
         // check if user already exist
-        const existingUser = await User.findOne({email});
+        let existingUser = await User.findOne({email});
         if(!existingUser){
-            return res.status(400).json({
+            return res.status(401).json({
                 success:false,
                 message:'Existing user is not registered',
             });
         }
 
         const payload = {
-            email: user.email,
-            id:user._id,
-            role:user.role,
+            email: existingUser.email,
+            id:existingUser._id,
+            role:existingUser.role,
         }
-        // verify password and generate JWT token
+        // verify password and if it's correct then generate JWT token
+        // password match
         if(await bcrypt.compare(password, existingUser.password)){
-            // password match
+            // generate token
             let token = jwt.sign(payload, 
                 process.env.JWT_SECRET,
                 {
                     expiresIn:"2h",
                 }
             );
+            existingUser = existingUser.toObject();
             existingUser.token = token;
             existingUser.password = undefined;
+            const options = {
+                expires: new Date(Date.now()+3*24*60*60*1000),
+                httpOnly:true,
+            }
 
-            res.cookie
+            res.cookie("token", token, options).status(200).json({
+                success:true,
+                token,
+                existingUser,
+                message:'User logged in successfully',
+            });
         }
     }
     catch(err){
-        console.log("error in signup method");
+        console.log(err);
+        return res.status(500).json({
+            success:false,
+            message:'Login Failure',
+        });
     }
 }
